@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
-class MessageController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class MessageController extends AbstractController
 {
 
 }
