@@ -1,5 +1,5 @@
 ###> Php Storm ###
-/.dea/
+/.idea/
 ###< Php Storm ###
 ###> symfony/framework-bundle ###
 /.env.local
