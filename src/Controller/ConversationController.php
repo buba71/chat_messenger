@@ -28,24 +28,24 @@ class ConversationController extends AbstractController
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    #[Route('/{id}', name: 'getConversation')]
+    #[Route('/', name: 'newConversation', methods: ['POST'])]
     public function index(Request $request, User $user): JsonResponse
     {
-        $otherUser = $request->get('otherUser', 0);
-        $otherUser = $this->userRepository->find($user->getId());
+        $newUser = $request->get('newUser', 0);
+        $newUser = $this->userRepository->find($newUser);
 
-        if (is_null($otherUser)) {
+        if (is_null($newUser)) {
             throw new EntityNotFoundException('The user does not exist');
         }
 
         // Cannot create a conversation with myself.
-        if ($otherUser->getId() === $this->getUser()->getId()) {
+        if ($newUser->getId() === $this->getUser()->getId()) {
             throw new \Exception('Sorry, but you cannot create a conversation with yourself.');
         }
 
         // Check if conversation already exist.
         $conversation = $this->conversationRepository->findConversationByParticipants(
-            $otherUser->getId(),
+            $newUser->getId(),
             $this->getUser()->getId()
         );
 
@@ -59,16 +59,16 @@ class ConversationController extends AbstractController
         $participant->setUser($this->getUser());
         $participant->setConversation($conversation);
 
-        $otherParticipant = new Participant();
-        $otherParticipant->setUser($otherUser);
-        $otherParticipant->setConversation($conversation);
+        $newParticipant = new Participant();
+        $newParticipant->setUser($newUser);
+        $newParticipant->setConversation($conversation);
 
         $this->entityManager->getConnection()->beginTransaction();
 
         try {
             $this->entityManager->persist($conversation);
             $this->entityManager->persist($participant);
-            $this->entityManager->persist($otherParticipant);
+            $this->entityManager->persist($newParticipant);
 
             $this->entityManager->flush();
             $this->entityManager->commit();
@@ -80,6 +80,16 @@ class ConversationController extends AbstractController
 
         return new JsonResponse(['id' => $conversation->getId()], Response::HTTP_CREATED);
     }
+
+    #[Route('/', name: 'getConversations', methods: ['GET'])]
+    public function getConversations(): JsonResponse
+    {
+        $conversations = $this->conversationRepository->findConversationByUser($this->getUser()->getId());
+
+        return new JsonResponse($conversations, Response::HTTP_ACCEPTED);
+    }
+
+
 
 
 }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Conversation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -70,8 +71,10 @@ class ConversationRepository extends ServiceEntityRepository
             ->select($qb->expr()->count('p.conversation'))
             ->innerJoin('c.participants', 'p')
             ->where(
-                $qb->expr()->eq('p.user', ':newUser'),
-                $qb->expr()->eq('p.user', ':user')
+                $qb->expr()->orX(
+                    $qb->expr()->eq('p.user', ':newUser'),
+                    $qb->expr()->eq('p.user', ':user')
+                )
             )
             ->groupBy('p.conversation')
             ->having(
@@ -84,6 +87,24 @@ class ConversationRepository extends ServiceEntityRepository
                 'newUser' => $newUserId,
                 'user' => $userId
             ])
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findConversationByUser(int $userId)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb
+            ->innerJoin('c.participants', 'p', Join::WITH, $qb->expr()->neq('p.user', ':userId'))
+            ->innerJoin('c.participants', 'currentUser', Join::WITH, $qb->expr()->eq('currentUser.user', ':userId'))
+            ->leftJoin('c.lastMessage', 'lm')
+            ->innerJoin('currentUser.user', 'currentUserUser')
+            ->innerJoin('p.user', 'newUser')
+            ->where('currentUserUser.id = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('lm.createdAt', 'DESC')
+            ->select('newUser.username', 'c.id as conversationId', 'lm.content', 'lm.createdAt')
         ;
 
         return $qb->getQuery()->getResult();
