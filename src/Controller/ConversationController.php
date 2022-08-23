@@ -85,11 +85,7 @@ class ConversationController extends AbstractController
     public function getConversations(): JsonResponse
     {
         $conversations = $this->conversationRepository->findConversationByUser($this->getUser()->getId());
-
         return new JsonResponse($conversations, Response::HTTP_ACCEPTED);
     }
-
-
-
 
 }

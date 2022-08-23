@@ -5,8 +5,8 @@ namespace App\Entity;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 #[ORM\Index(columns: ["createdAt"], name: "created_at_index")]
@@ -15,13 +15,19 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('body_message')]
     private ?int $id = null;
 
     #[ORM\Column(type: "text")]
+    #[Groups('body_message')]
     private String $content;
 
     #[ORM\Column(type: "datetime")]
-    private DateTime $createdAt;
+    #[Groups('body_message')]
+    private \DateTime $createdAt;
+
+    #[Groups('body_message')]
+    private bool $mine;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\User", inversedBy: "messages")]
     private User $user;
@@ -31,7 +37,7 @@ class Message
 
     public function __construct()
     {
-        $this->createdAt = new DateTime();
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -51,16 +57,26 @@ class Message
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    public function getMine(): bool
+    {
+        return $this->mine;
+    }
+
+    public function setMine(bool $mine): void
+    {
+        $this->mine = $mine;
     }
 
     public function getUser(): ?User

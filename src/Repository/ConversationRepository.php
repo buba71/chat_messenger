@@ -109,4 +109,25 @@ class ConversationRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function checkIfUserIsParticipant(int $conversationId, int $userId)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb
+            ->innerJoin('c.participants', 'p')
+            ->where('c.id = :conversationId')
+            ->andWhere(
+                $qb->expr()->eq('p.user', ':userId')
+            )
+            ->setParameters([
+                'conversationId' => $conversationId,
+                'userId' => $userId
+            ])
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }
