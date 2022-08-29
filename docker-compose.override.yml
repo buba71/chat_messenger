@@ -13,6 +13,7 @@ services:
     ports: [1025, 1080]
 ###< symfony/mailer ###
 
+
 ###> symfony/mercure-bundle ###
   mercure:
     ports:
