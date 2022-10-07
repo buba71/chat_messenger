@@ -91,6 +91,7 @@ class MessageController extends AbstractController
         $message->setMine(false);
         $messageSerialized = $this->serializer->serialize($message, 'json', ['groups' => 'body_message']);
 
+        // dd($messageSerialized);
 
         $update = new Update(
             [
@@ -98,7 +99,6 @@ class MessageController extends AbstractController
                 sprintf("/conversations/%s", $recipient->getUser()->getUsername())
             ],
             $messageSerialized,
-            false,
             sprintf("/%s", $recipient->getUser()->getUserName())
         );
 
@@ -109,6 +109,6 @@ class MessageController extends AbstractController
         $message->setMine(true);
         $messageNormalized = $this->normalizer->normalize($message, null, ['groups' => 'body_message']);
 
-        return new JsonResponse($message, Response::HTTP_CREATED);
+        return new JsonResponse($messageNormalized, Response::HTTP_CREATED);
     }
 }
