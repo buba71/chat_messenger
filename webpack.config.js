@@ -1,4 +1,6 @@
 const Encore = require('@symfony/webpack-encore');
+const webpack = require('webpack');
+const path = require('path');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -32,10 +34,26 @@ Encore
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
 
-    // Enable Vue JS.
+    /**
+     * Enable Vue JS and webpack config.
+     */
+
     .enableVueLoader(() => {}, {
         version: 3
     })
+    .addPlugin(
+        new webpack.DefinePlugin({
+            __VUE_OPTIONS_API__: true,
+            __VUE_PROD_DEVTOOLS__: false
+        })
+    )
+    .addAliases({
+        '@': path.resolve('assets/js'),
+        vue$: 'vue/dist/vue.esm-bundler',
+    })
+    /**
+     * Enab le Vue JS and webpack config.
+     */
 
     /*
      * FEATURE CONFIG

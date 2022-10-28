@@ -46,18 +46,4 @@ class HomeController extends AbstractController
         $hub->publish($update);
         return new Response('published!');
     }
-
-    /**
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     */
-    #[Route('/test')]
-    public function test()
-    {
-        return $this->httpClient->request('POST', 'https://localhost:443/.well-known/mercure', [
-
-        ])->getContent();
-    }
 }

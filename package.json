@@ -7,6 +7,7 @@
         "@symfony/webpack-encore": "^4.0.0",
         "@vue/compiler-sfc": "^3.2.40",
         "core-js": "^3.23.0",
+        "pinia": "^2.0.23",
         "regenerator-runtime": "^0.13.9",
         "vue": "^3.2.40",
         "vue-loader": "^17.0.0",
@@ -21,5 +22,8 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "vue-router": "^4.1.6"
     }
 }
