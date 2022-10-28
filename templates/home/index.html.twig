@@ -1,19 +1,11 @@
 {% extends 'base.html.twig' %}
-
+    
 {% block body %}
-    <h1>Hello David!</h1>
-    <form action="{{ path('ping') }}" method="post">
-        <button>Ping</button>
-    </form>
+    <div id="app">
+        <componentA><componentA/>
+    </div>
 {% endblock %}
-{% block javascripts %}
-    <script>
-        const url = new URL('https://localhost/.well-known/mercure');
-        url.searchParams.append('topic', 'http://example.com/ping');
 
-        const eventSource = new EventSource(url);
-        eventSource.onmessage = e => {
-            document.querySelector('h1').innerHTML += '<span>Une notification</span>';
-        };
-    </script>
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
 {% endblock %}

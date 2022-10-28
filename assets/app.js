@@ -10,3 +10,35 @@ import './styles/app.css';
 
 // start the Stimulus application
 import './bootstrap';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import { createRouter, createWebHistory } from 'vue-router';
+import App from './components/App.vue';
+import Blank from './components/Right/Blank.vue';
+import Right from './components/Right/Right.vue';
+
+const app = createApp(App);
+
+const routes = [
+    {
+        name: 'blank',
+        path: '/',
+        component: Blank
+    },
+    {
+        name: 'conversation',
+        path: '/conversation/:id',
+        component: Right
+    }
+];
+const router = createRouter({
+    history: createWebHistory(),
+    routes
+})
+
+app.use(createPinia());
+app.use(router);
+app.mount('#app');
+
+
+
