@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
-
+    
 {% block body %}
-    <h1>Hello David!</h1>
-    <form action="{{ path('ping') }}" method="post">
-        <button>Ping</button>
-    </form>
+    <div id="app">
+        <componentA><componentA/>
+    </div>
 {% endblock %}
+
 {% block javascripts %}
     <script>
         const url = new URL('http://192.168.1.113:3000/.well-known/mercure');
@@ -16,4 +16,7 @@
             document.querySelector('h1').innerHTML += '<span>Une notification</span>';
         };
     </script>
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
 {% endblock %}
