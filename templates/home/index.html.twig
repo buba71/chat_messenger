@@ -8,7 +8,7 @@
 {% endblock %}
 {% block javascripts %}
     <script>
-        const url = new URL('https://localhost/.well-known/mercure');
+        const url = new URL('http://192.168.1.113:3000/.well-known/mercure');
         url.searchParams.append('topic', 'http://example.com/ping');
 
         const eventSource = new EventSource(url);
