@@ -9,7 +9,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Date;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
-#[ORM\Index(columns: ["createdAt"], name: "created_at_index")]
 class Message
 {
     #[ORM\Id]
@@ -26,6 +25,7 @@ class Message
     #[Groups('body_message')]
     private \DateTime $createdAt;
 
+    #[ORM\Column(type: "boolean")]
     #[Groups('body_message')]
     private bool $mine;
 

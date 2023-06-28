@@ -1,7 +1,12 @@
 <template>
     <div class="col-7 px-0">
-        <div class="px-4 py-5 chat-box bg-white">
-            <Message />        
+        <div class="px-4 py-5 chat-box bg-white" ref="messagesBody">
+            <template v-for="message in messages" :key="message.id">
+            
+                <Message :message="message" /> 
+                
+            </template>
+                   
         </div>
       
         <Input />          
@@ -12,18 +17,31 @@
 <script setup>
 
 import Message from './Message.vue';
-import { useMessageStore } from '../../stores/Messages'
+import { useMessageStore } from '../../stores/messages.js'
 import Input from './Input.vue';
-import {ref, onMounted} from "vue";
+import {ref, onMounted, computed} from "vue";
 import { storeToRefs } from 'pinia';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const messagesBody = ref(null);
 
 const { messages } = storeToRefs(useMessageStore());
 const { getMessages } = useMessageStore();
 
+const scrollDown = () => {
+    messagesBody.value.scrollTop = messagesBody.value.scrollHeight;
+}
+
 onMounted(() => {
-  getMessages();
+    
+    // Get the messages of conversation and then scrolldown to the last message.
+    getMessages(route.params.id)
+    .then(() => {
+        scrollDown();
+    });
+    
+
 })
-
-
 
 </script>
