@@ -7,9 +7,10 @@ export const useMessageStore = defineStore({
     }),
     getters: {},
     actions: {
-        async getMessages() {
+        async getMessages(conversationId) {
+            
             try {
-                const response = await fetch('/messages');
+                const response = await fetch(`/messages/${conversationId}`);
                 this.messages = await response.json();
             }  catch (error) {
                 console.log(error.response.data);
