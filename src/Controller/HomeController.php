@@ -31,19 +31,11 @@ class HomeController extends AbstractController
                 null,
                 false,
                 true,
-                false,
+                true,
                 'strict'
             )
         );
 
         return $response;
-    }
-
-    #[Route('/ping', name: 'ping', methods: ['POST'])]
-    public function ping(HubInterface $hub)
-    {
-        $update = new Update('http://example.com/ping', "[]");
-        $hub->publish($update);
-        return new Response('published!');
     }
 }

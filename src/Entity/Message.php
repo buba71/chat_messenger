@@ -25,7 +25,6 @@ class Message
     #[Groups('body_message')]
     private \DateTime $createdAt;
 
-    #[ORM\Column(type: "boolean")]
     #[Groups('body_message')]
     private bool $mine;
 

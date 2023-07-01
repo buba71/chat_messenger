@@ -6,7 +6,6 @@
 
 <script setup>
 
-import Message from './Message.vue';
 import Input from './Input.vue';
 
 </script>

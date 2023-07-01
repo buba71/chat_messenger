@@ -86,7 +86,7 @@ class ConversationController extends AbstractController
     public function getConversations(Request $request): JsonResponse
     {
         $conversations = $this->conversationRepository->findConversationByUser($this->getUser()->getId());
-        
+               
         $mercureHub = $this->getParameter('mercure.default_hub');
         $this->addLink($request, new Link('mercure', $mercureHub));
 

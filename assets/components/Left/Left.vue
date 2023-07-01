@@ -27,16 +27,17 @@
 
 <script setup>
 
-import Conversation from './Conversation.vue';
-import { useConversationStore } from '../../stores/conversations'
-import { ref, onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
+  import { ref, onMounted } from 'vue';
+  import { storeToRefs } from 'pinia';
+  import Conversation from './Conversation.vue';
+  import { useConversationStore } from '../../stores/conversations'
 
-const { conversations } = storeToRefs(useConversationStore());
-const { getConversations } = useConversationStore()
 
-onMounted(() => {
-  getConversations()
-})
+  const { conversations } = storeToRefs(useConversationStore());
+  const { getConversations } = useConversationStore()
+
+  onMounted(() => {
+    getConversations()
+  })
 
 </script>

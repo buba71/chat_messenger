@@ -7,7 +7,6 @@ use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token\Builder;
-use Symfony\Component\HttpFoundation\Cookie;
 
 class CookieGenerator
 {

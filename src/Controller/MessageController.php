@@ -39,20 +39,15 @@ class MessageController extends AbstractController
         // Can current user view the conversation ?
         $this->denyAccessUnlessGranted('view', $conversation);
 
-        $messages = $this->messageRepository->getMessagesByConversationID($conversation->getId());
+        $messages = $this->messageRepository->getMessagesByConversationID($conversation->getId());       
 
+        array_map(fn($message) =>
+            $message->setMine(
+                $message->getUser()->getId() === $this->getUser()->getId()
+            )
+        , $messages);
         
-
-        //array_map(fn($message) =>
-        //    $message->setMine(
-        //        $message->getUser()->getId() === $this->getUser()->getId()
-        //    )
-        //, $messages);
-//
-        
-        $messages = $this->normalizer->normalize($messages, null, ['groups' => 'body_message']);
-
-        
+        $messages = $this->normalizer->normalize($messages, null, ['groups' => 'body_message']);        
 
         return new  JsonResponse($messages, Response::HTTP_OK, []);
     }
@@ -65,13 +60,14 @@ class MessageController extends AbstractController
     public function newMessage(Request $request, Conversation $conversation): JsonResponse
     {
 
-        $user = $this->userRepository->findOneBy(['id' => 1]);
+        $user = $this->getUser();
         $recipient = $this->participantRepository->findParticipantByConversationIdAndUser($conversation->getId(), $user->getId());
 
-        $content = $request->get('content', null);
+        $content = json_decode($request->getContent(), true);
+    
 
         $message = new Message();
-        $message->setContent($content);
+        $message->setContent($content['message']);   
         $message->setUser($user);
 
         $conversation->addMessage($message);
@@ -104,8 +100,6 @@ class MessageController extends AbstractController
             $messageSerialized,
             sprintf("/%s", $recipient->getUser()->getUserName())
         );
-
-        // dd($update);
         
         $this->hub->publish($update);
 
