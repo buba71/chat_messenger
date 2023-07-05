@@ -95,17 +95,15 @@ class ConversationRepository extends ServiceEntityRepository
     public function findConversationByUser(int $userId)
     {
         $qb = $this->createQueryBuilder('c');
-        $qb
-            ->innerJoin('c.participants', 'p', Join::WITH, $qb->expr()->neq('p.user', ':userId'))
-            ->innerJoin('c.participants', 'currentUser', Join::WITH, $qb->expr()->eq('currentUser.user', ':userId'))
+        $qb->select('otherUser.username', 'c.id as conversationId', 'lm.content', 'lm.createdAt')
+            ->innerJoin('c.participants', 'p', Join::WITH, $qb->expr()->neq('p.user', ':user'))
+            ->innerJoin('c.participants', 'me', Join::WITH, $qb->expr()->eq('me.user', ':user'))
             ->leftJoin('c.lastMessage', 'lm')
-            ->innerJoin('currentUser.user', 'currentUserUser')
-            ->innerJoin('p.user', 'newUser')
-            ->where('currentUserUser.id = :userId')
-            ->setParameter('userId', $userId)
-            ->orderBy('lm.createdAt', 'DESC')
-            ->select('newUser.username', 'c.id as conversationId', 'lm.content', 'lm.createdAt')
-        ;
+            ->innerJoin('me.user', 'meUser')
+            ->innerJoin('p.user', 'otherUser')
+            ->where('meUser.id = :user')
+            ->setParameter('user', $userId)
+            ->orderBy('lm.createdAt', 'DESC');
 
         return $qb->getQuery()->getResult();
     }
