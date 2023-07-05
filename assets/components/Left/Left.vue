@@ -30,14 +30,35 @@
   import { ref, onMounted } from 'vue';
   import { storeToRefs } from 'pinia';
   import Conversation from './Conversation.vue';
-  import { useConversationStore } from '../../stores/conversations'
+  import { useConversationStore } from '../../stores/conversations.js';
+  import { useUserStore } from '../../stores/user.js';
 
 
-  const { conversations } = storeToRefs(useConversationStore());
-  const { getConversations } = useConversationStore()
+  const { conversations, hubURL } = storeToRefs(useConversationStore());
+  const { getConversations } = useConversationStore();
+  const { username } = storeToRefs(useUserStore());    
+  
+  const updateConversation = (data) => {
+    console.log(data);
+  }
 
   onMounted(() => {
+
     getConversations()
+    .then(() => {
+      
+      const url = new URL(hubURL.value);
+      //url.searchParams.append('topic', '/conversations/admin');
+      url.searchParams.append('topic', `/conversations/${username.value}`);     
+
+      const eventSource = new EventSource(url, {
+        withCredentials: false,
+      });
+      
+      eventSource.onmessage = (event) => {
+        updateConversation(event.data);
+      }
+    })
   })
 
 </script>

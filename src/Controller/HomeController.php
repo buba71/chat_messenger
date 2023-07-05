@@ -20,21 +20,21 @@ class HomeController extends AbstractController
     #[Route('/', name:'app_home')]
     public function index(CookieGenerator $cookieGenerator): Response
     {
-        $token = $cookieGenerator->generate($this->getUser()->getUserIdentifier());
-        $response = $this->render('home/index.html.twig');
-        $response->headers->setCookie(
-            new Cookie(
-                'mercureAuthorization',
-                $token,
-                (new \DateTime())->add(new \DateInterval('PT2H')),
-                '/.well-known/mercure',
-                null,
-                false,
-                true,
-                true,
-                'strict'
-            )
-        );
+      $token = $cookieGenerator->generate($this->getUser()->getUserIdentifier());
+      $response = $this->render('home/index.html.twig');
+      $response->headers->setCookie(
+          new Cookie(
+              'mercureAuthorization',
+              $token,
+              (new \DateTime())->add(new \DateInterval('PT2H')),
+              '/.well-known/mercure',
+              null,
+              false,
+              true,
+              true,
+              'strict'
+          )
+      );
 
         return $response;
     }

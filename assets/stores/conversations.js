@@ -4,11 +4,15 @@ import { Vue } from 'vue';
 export const useConversationStore = defineStore({
     id: 'conversations',
     state: () =>( { 
-        conversations: []        
+        conversations: [],
+        hubURL: null       
     }),
     getters: {
         MESSAGES: state => {
             return  conversationId => state.conversations.find(conversation => conversation.conversationId == conversationId).messages
+        }, 
+        HUBURL: state => {
+            return state.hubURL
         }
     },
     actions: {
@@ -16,9 +20,10 @@ export const useConversationStore = defineStore({
             
             try {
                 const response = await fetch('/conversations');
+                this.hubURL = response.headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/)[1];
                 this.conversations = await response.json();
             }  catch (error) {
-                console.log(error.response.data);
+                console.log(error);
             }          
         },
         async getMessages(conversationId) {
@@ -48,7 +53,7 @@ export const useConversationStore = defineStore({
                     body: JSON.stringify(messageData)
                 });
                 const newMessage = await response.json();
-                const conversation = this.conversations.find(conversation => conversation.conversationId == conversationId)
+                const conversation = this.conversations.find(conversation => conversation.conversationId == conversationId);
                 conversation.messages.push(newMessage);
                 // Update last message in the conversation. Refactor to a function
                 conversation.content = newMessage.content;
@@ -58,6 +63,7 @@ export const useConversationStore = defineStore({
             }  catch (error) {
                 console.log(error.response.data);
             }
-        }
+        },
+
     }
 })

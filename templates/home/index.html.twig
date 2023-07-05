@@ -1,21 +1,11 @@
 {% extends 'base.html.twig' %}
     
 {% block body %}
-    <div id="app">
+    <div id="app" data-username="{{ app.user.username}}">
         <componentA><componentA/>
     </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script>        
-        const url = new URL('http://192.168.1.113:3000/.well-known/mercure');
-        url.searchParams.append('topic', 'http://example.com/ping');
-
-        const eventSource = new EventSource(url);
-        eventSource.onmessage = e => {
-            document.querySelector('h1').innerHTML += '<span>Une notification</span>';
-        };
-    </script>
-
     {{ encore_entry_script_tags('app') }}
 {% endblock %}

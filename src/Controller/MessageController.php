@@ -93,12 +93,12 @@ class MessageController extends AbstractController
         // dd($messageSerialized);
 
         $update = new Update(
+            
             [
                 sprintf("/conversations/%s", $conversation->getId()),
                 sprintf("/conversations/%s", $recipient->getUser()->getUsername())
             ],
             $messageSerialized,
-            sprintf("/%s", $recipient->getUser()->getUserName())
         );
         
         $this->hub->publish($update);

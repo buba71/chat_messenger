@@ -11,13 +11,15 @@ import './styles/app.css';
 // start the Stimulus application
 import './bootstrap';
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
+import { createPinia, storeToRefs } from 'pinia';
 import { createRouter, createWebHistory } from 'vue-router';
 import App from './components/App.vue';
 import Blank from './components/Right/Blank.vue';
 import Right from './components/Right/Right.vue';
+import { useUserStore } from './stores/user.js';
 
 const app = createApp(App);
+
 
 const routes = [
     {
@@ -31,6 +33,7 @@ const routes = [
         component: Right
     }
 ];
+
 const router = createRouter({
     history: createWebHistory(),
     routes
@@ -39,3 +42,6 @@ const router = createRouter({
 app.use(createPinia());
 app.use(router);
 app.mount('#app');
+
+const { username } = storeToRefs(useUserStore()); 
+username.value = document.querySelector("#app").dataset.username
