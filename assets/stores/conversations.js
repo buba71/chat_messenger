@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia';
-import { Vue } from 'vue';
 
 export const useConversationStore = defineStore({
     id: 'conversations',
@@ -8,6 +7,9 @@ export const useConversationStore = defineStore({
         hubURL: null       
     }),
     getters: {
+        CONVERSATIONS: state => {
+            return state.conversations.sort((a, b) => a.createdAt - b.createdAt)
+        },
         MESSAGES: state => {
             return  conversationId => state.conversations.find(conversation => conversation.conversationId == conversationId).messages
         }, 
@@ -52,18 +54,25 @@ export const useConversationStore = defineStore({
                     },
                     body: JSON.stringify(messageData)
                 });
-                const newMessage = await response.json();
-                const conversation = this.conversations.find(conversation => conversation.conversationId == conversationId);
-                conversation.messages.push(newMessage);
-                // Update last message in the conversation. Refactor to a function
-                conversation.content = newMessage.content;
-                conversation.createdAt = newMessage.createdAt;
 
-                
+                if (response.ok) {
+                    const newMessage = await response.json();
+                    this.updateConversationWithNewMessage(newMessage, conversationId);
+                } else {
+                    console.log('Failed to post message');
+                }
             }  catch (error) {
                 console.log(error.response.data);
             }
         },
+
+        updateConversationWithNewMessage(message, conversationId) {
+
+            const conversation = this.conversations.find(conversation => conversation.conversationId == conversationId);
+            conversation.messages.push(message);                
+            conversation.content = message.content;
+            conversation.createdAt.date = message.createdAt;
+        }
 
     }
 })
