@@ -11,7 +11,7 @@
         <div class="messages-box">
           <div class="list-group rounded-0">
 
-            <template v-for="conversation in conversations" :key="conversation.conversationId" >
+            <template v-for="conversation in CONVERSATIONS" :key="conversation.conversationId" >
               <Conversation :conversation="conversation" />
             </template>
 
@@ -27,26 +27,31 @@
 
 <script setup>
 
-  import { ref, onMounted } from 'vue';
+  import { onMounted } from 'vue';
   import { storeToRefs } from 'pinia';
   import Conversation from './Conversation.vue';
   import { useConversationStore } from '../../stores/conversations.js';
   import { useUserStore } from '../../stores/user.js';
-
-
-  const { conversations, hubURL } = storeToRefs(useConversationStore());
+ 
+  const { conversations, CONVERSATIONS, hubURL } = storeToRefs(useConversationStore());
   const { getConversations } = useConversationStore();
-  const { username } = storeToRefs(useUserStore());    
-  
-  const updateConversation = (data) => {
-    console.log(data);
+  const { username } = storeToRefs(useUserStore());     
+
+    /**
+   * Updates a conversation with new data.
+   *
+   * @param {Object} payload - The payload containing the updated conversation data.
+   */
+  const updateConversation = (payload) => {    
+    const lastConversation = conversations.value.find(conversation => conversation.conversationId == payload.conversation.id);
+    lastConversation.content = payload.message.content;
+    lastConversation.createdAt.date = payload.message.createdAt;        
   }
 
   onMounted(() => {
 
     getConversations()
     .then(() => {
-      
       const url = new URL(hubURL.value);
       //url.searchParams.append('topic', '/conversations/admin');
       url.searchParams.append('topic', `/conversations/${username.value}`);     
@@ -56,7 +61,7 @@
       });
       
       eventSource.onmessage = (event) => {
-        updateConversation(event.data);
+        updateConversation(JSON.parse(event.data));
       }
     })
   })

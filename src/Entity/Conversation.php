@@ -5,8 +5,8 @@ namespace App\Entity;
 use App\Repository\ConversationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Schema\Index;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
 #[ORM\Index(columns: ["last_message_id"], name: "last_message_id_index")]
@@ -15,6 +15,7 @@ class Conversation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('body_message')]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: "App\Entity\Message")]

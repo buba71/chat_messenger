@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mercure\Discovery;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\WebLink\Link;
 
 #[Route('/conversations', name: 'conversations')]
 class ConversationController extends AbstractController
@@ -88,9 +87,6 @@ class ConversationController extends AbstractController
     {
         $conversations = $this->conversationRepository->findConversationByUser($this->getUser()->getId());
         $discovery->addLink($request);
-               
-        //$mercureHub = $this->getParameter('mercure.default_hub');
-        //$this->addLink($request, new Link('mercure', $mercureHub));
 
         return new JsonResponse($conversations, Response::HTTP_ACCEPTED);
     }

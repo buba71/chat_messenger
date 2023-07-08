@@ -88,9 +88,16 @@ class MessageController extends AbstractController
         }
 
         $message->setMine(false);
-        $messageSerialized = $this->serializer->serialize($message, 'json', ['groups' => 'body_message']);
+        $messageSerialized = $this->serializer->serialize(
+            [
+                'message' => $message,
+                'conversation' => $conversation,
+                'recipient' => $recipient->getUser()->getUsername(),
+            ],
+            'json', ['groups' => 'body_message']
+        );
 
-        // dd($messageSerialized);
+        //dd($messageSerialized);
 
         $update = new Update(
             
@@ -99,6 +106,7 @@ class MessageController extends AbstractController
                 sprintf("/conversations/%s", $recipient->getUser()->getUsername())
             ],
             $messageSerialized,
+            
         );
         
         $this->hub->publish($update);

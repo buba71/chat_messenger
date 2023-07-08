@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 class Participant
@@ -14,6 +15,7 @@ class Participant
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\User", inversedBy: "participants")]
+    #[Groups('body_message')]
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Conversation", inversedBy: "participants")]
